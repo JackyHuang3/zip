@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package zip_test
+package zip
 
 import (
 	"bytes"
@@ -11,7 +11,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/yeka/zip"
+	"github.com/spf13/afero"
 )
 
 func ExampleWriter() {
@@ -19,7 +19,7 @@ func ExampleWriter() {
 	buf := new(bytes.Buffer)
 
 	// Create a new zip archive.
-	w := zip.NewWriter(buf)
+	w := NewWriter(buf)
 
 	// Add some files to the archive.
 	var files = []struct {
@@ -49,7 +49,7 @@ func ExampleWriter() {
 
 func ExampleReader() {
 	// Open a zip archive for reading.
-	r, err := zip.OpenReader("testdata/readme.zip")
+	r, err := OpenReader(afero.NewOsFs(), "testdata/readme.zip")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -80,8 +80,8 @@ func ExampleWriter_Encrypt() {
 
 	// write a password zip
 	raw := new(bytes.Buffer)
-	zipw := zip.NewWriter(raw)
-	w, err := zipw.Encrypt("hello.txt", "golang", zip.AES256Encryption)
+	zipw := NewWriter(raw)
+	w, err := zipw.Encrypt("hello.txt", "golang", AES256Encryption)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -92,7 +92,7 @@ func ExampleWriter_Encrypt() {
 	zipw.Close()
 
 	// read the password zip
-	zipr, err := zip.NewReader(bytes.NewReader(raw.Bytes()), int64(raw.Len()))
+	zipr, err := NewReader(bytes.NewReader(raw.Bytes()), int64(raw.Len()))
 	if err != nil {
 		log.Fatal(err)
 	}

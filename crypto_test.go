@@ -5,13 +5,15 @@ import (
 	"io"
 	"path/filepath"
 	"testing"
+
+	"github.com/spf13/afero"
 )
 
 // Test simple password reading.
 func TestPasswordReadSimple(t *testing.T) {
 	file := "hello-aes.zip"
 	var buf bytes.Buffer
-	r, err := OpenReader(filepath.Join("testdata", file))
+	r, err := OpenReader(afero.NewOsFs(), filepath.Join("testdata", file))
 	if err != nil {
 		t.Errorf("Expected %s to open: %v.", file, err)
 	}
@@ -45,7 +47,7 @@ func TestPasswordReadSimple(t *testing.T) {
 func TestPasswordHelloWorldAes(t *testing.T) {
 	file := "world-aes.zip"
 	expecting := "helloworld"
-	r, err := OpenReader(filepath.Join("testdata", file))
+	r, err := OpenReader(afero.NewOsFs(), filepath.Join("testdata", file))
 	if err != nil {
 		t.Errorf("Expected %s to open: %v", file, err)
 	}
@@ -79,7 +81,7 @@ func TestPasswordMacbethAct1(t *testing.T) {
 	file := "macbeth-act1.zip"
 	expecting := "Exeunt"
 	var b bytes.Buffer
-	r, err := OpenReader(filepath.Join("testdata", file))
+	r, err := OpenReader(afero.NewOsFs(), filepath.Join("testdata", file))
 	if err != nil {
 		t.Errorf("Expected %s to open: %v", file, err)
 	}

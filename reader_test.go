@@ -16,6 +16,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/spf13/afero"
 )
 
 type ZipTest struct {
@@ -287,7 +289,7 @@ func readTestZip(t *testing.T, zt ZipTest) {
 		z, err = NewReader(rat, size)
 	} else {
 		var rc *ReadCloser
-		rc, err = OpenReader(filepath.Join("testdata", zt.Name))
+		rc, err = OpenReader(afero.NewOsFs(), filepath.Join("testdata", zt.Name))
 		if err == nil {
 			defer rc.Close()
 			z = &rc.Reader

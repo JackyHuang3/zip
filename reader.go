@@ -13,6 +13,8 @@ import (
 	"hash/crc32"
 	"io"
 	"os"
+
+	"github.com/spf13/afero"
 )
 
 var (
@@ -28,7 +30,7 @@ type Reader struct {
 }
 
 type ReadCloser struct {
-	f *os.File
+	f afero.File
 	Reader
 }
 
@@ -44,8 +46,8 @@ func (f *File) hasDataDescriptor() bool {
 }
 
 // OpenReader will open the Zip file specified by name and return a ReadCloser.
-func OpenReader(name string) (*ReadCloser, error) {
-	f, err := os.Open(name)
+func OpenReader(fs afero.Fs, name string) (*ReadCloser, error) {
+	f, err := fs.Open(name)
 	if err != nil {
 		return nil, err
 	}
